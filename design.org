@@ -1,0 +1,68 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t
+#+options: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+options: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
+#+options: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+title: design-abst
+#+date: <2020-01-20 月>
+#+author: meguru
+#+email: meguru@meguru-Latitude-7390
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 26.1 (Org mode 9.2.6)
+
+DB設計
+
+* keyword
+#+begin_example
+{
+  keyword: str
+}
+#+end_example
+
+- keyword
+  タイトルや用語(主に名詞句)
+
+* content
+#+begin_example
+{ 
+  doc_title: object_id->keywords,
+  child_titles: array,
+  contents: json
+}
+#+end_example
+
+- doc _ title
+  keyword の object_id
+- child _ titles
+  ["概要"] や ["概要" "プロフィール"] のようなセクション名のリスト
+- contents
+  jsonize された HTML データ
+
+* abst
+#+begin_example
+{
+  doc_title: object_id->keywords,
+  contents: json
+}
+#+end_example
+- doc _ title
+  keyword の object _ id
+- content
+  jsonize された HTML データ
+
+* related words
+#+begin_example
+{
+  doc_title: object_id->keywords,
+  texts: array,
+  contents: json
+}
+#+end_example
+- doc _ title
+  keyword の object _ id
+- texts
+  contents からテキストのみを抽出したリスト
+- contents
+  jsonize された HTML データ
+
