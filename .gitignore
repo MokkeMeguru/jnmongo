@@ -1,0 +1,6 @@
+/__pycache__/
+/log-doc/
+/boundary/__pycache__/__init__.cpython-37.pyc
+/boundary/__pycache__/*.pyc
+/venv/
+/service/__pycache__/__init__.cpython-37.pyc

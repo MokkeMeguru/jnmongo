@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from pprint import pprint
-from base import BoundaryBase
+from boundary.base import BoundaryBase
 from bson.objectid import ObjectId
 from typing import List, Dict
 
@@ -8,6 +8,7 @@ from typing import List, Dict
 class Related_Words(BoundaryBase):
     """DB Boundary of Related Words
     """
+
     def __init__(self, client: MongoClient):
         super(Related_Words, self).__init__(client=client)
         self.db = client['related_words']
