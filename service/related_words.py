@@ -24,11 +24,11 @@ def extract_item(article: Dict):
     args:
     - article: Dict
     returns:
-    - title: str
-    - related_words: Dict
+    - rrw: Dict
     related words's section
+    - rw: list
+    extracted related words
     """
-    title = get_element(article, 'title')
-    raw_related_words = article.get('related_words', [])
-    _related_words = walk_words(raw_related_words)
-    return title, list(_related_words)
+    rrw = article.get('related_words', [])
+    rw = walk_words(rrw)
+    return rrw, list(rw)
