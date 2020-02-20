@@ -1,4 +1,4 @@
-# FAILED
+# PASS
 testcase_1_data = [
     {'tag': 'h2',
      'content': ['title1']},
@@ -23,7 +23,7 @@ testcast_1_answer = [
               {'tag': None,
                'conent': ['hello']}]}]}]
 
-# FAILED
+# PASS
 testcase_2_data = [
     {'tag': 'h2',
      'content': ['title1']},
@@ -51,7 +51,7 @@ testcast_2_answer = [
 
 
 # FAILED
-testcase_2_data = [
+testcase_3_data = [
     {'tag': 'h2',
      'content': ['title1']},
     {'tag': None,
@@ -65,7 +65,7 @@ testcase_2_data = [
               {'tag': None,
                'content': ['hello']}]}]}]
 
-testcast_2_answer = [
+testcast_3_answer = [
     {'titles': ['title1'],
      'contents': [{'tag': None,
                    'content': [
@@ -77,7 +77,3 @@ testcast_2_answer = [
           'content': [
               {'tag': None,
                'conent': ['hello']}]}]}]
-
-if __name__ == '__main__':
-    from . import contents
-    print(contents.SectionParser([], testcase_1_data)())

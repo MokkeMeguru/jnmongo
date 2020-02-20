@@ -1,6 +1,7 @@
 from typing import List, Dict, Union
 import regex
 import random
+import copy
 # source
 # h2-1
 # content1
@@ -47,12 +48,12 @@ class SectionParser:
             print('>>', self.current_contents)
             print('>> currents trees', self.section_trees)
             current_tree = SectionTree(
-                self.current_titles, self.current_contents)
+                copy.copy(self.current_titles), copy.copy(self.current_contents))
             self.section_trees += [current_tree]
             print('updated trees', self.section_trees)
             self.current_contents = []
 
-    def __call__(self, articles: List = []):
+    def __call__(self, articles: List = [], gather: bool=True):
         article_length = len(articles)
         idx = -1
         while True:
@@ -60,7 +61,8 @@ class SectionParser:
                 break
             idx += 1
             article = articles[idx]
-            if type(article) is str:
+            print('art', idx,  article)
+            if type(article) == str:
                 self.current_contents.append(article)
             elif type(article) is dict:
                 tag = article['tag']
@@ -70,36 +72,27 @@ class SectionParser:
                     self.gather_tree()
                     self.current_titles.append(article['content'][0])
                 else:
-                    self.current_contents.append(article)
-        self.gather_tree()
-        return self.section_trees
+                    section_trees, rest_article = SectionParser(
+                        self.current_titles)(article['content'], False)
+                    print('rest', rest_article)
+                    print('tree', section_trees)
+                    article['content'] = rest_article
+                    
+                    if len(article) != 0:
+                        self.current_contents.append(article)
+                    if len(section_trees) != 0:
+                        self.section_trees.append(section_trees)
 
-testcase_1_data = [
-    {'tag': 'h2',
-     'content': ['title1']},
-    {'tag': None,
-     'content': ['hy!']},
-    {'tag': 'h3',
-     'content': ['title2']},
-    {'tag': None,
-     'content': [
-         {'tag': None,
-          'content': ['hello']}]}]
+        if gather:
+            self.gather_tree()
+            return self.section_trees
+        else:
+            return self.section_trees, self.current_contents
 
 def main():
-    y = SectionParser([])(testcase_1_data)
+    import contents_test
+    y = SectionParser([])(copy.deepcopy(contents_test.testcase_3_data))
     print(y)
-    testcast_1_answer = [
-        {'titles': ['title1'],
-         'contents': [
-             {'tag': None,
-              'content': ['hy!']}]},
-        {'titles': ['title1', 'title2'],
-         'contents': [
-             {'tag': None,
-              'content': [
-                  {'tag': None,
-                   'conent': ['hello']}]}]}]
     return y
 
 if __name__ == '__main__':
