@@ -81,7 +81,7 @@ class SectionParser:
                     if len(article) != 0:
                         self.current_contents.append(article)
                     if len(section_trees) != 0:
-                        self.section_trees.append(section_trees)
+                        self.section_trees += section_trees
 
         if gather:
             self.gather_tree()
