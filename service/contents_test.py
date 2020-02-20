@@ -77,3 +77,9 @@ testcast_3_answer = [
           'content': [
               {'tag': None,
                'conent': ['hello']}]}]}]
+
+# problem
+# [[<SectionTree ['title1'] - [{'tag': None, 'content': ['hy!']}] - 48>],
+#   <SectionTree ['title1', 'title2'] -
+#     [{'tag': None, 'content':
+#       [{'tag': None, 'content': [{'tag': None, 'content': ['hello']}]}]}] - 36>]
