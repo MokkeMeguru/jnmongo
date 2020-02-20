@@ -73,7 +73,7 @@ class SectionParser:
                     self.current_titles.append(article['content'][0])
                 else:
                     section_trees, rest_article = SectionParser(
-                        self.current_titles)(article['content'], False)
+                        self.current_titles)(copy.copy(article['content']), False)
                     print('rest', rest_article)
                     print('tree', section_trees)
                     article['content'] = rest_article
