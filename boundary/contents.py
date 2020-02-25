@@ -1,13 +1,16 @@
-from pymongo import MongoClient
 from pprint import pprint
-from base import BoundaryBase
+from typing import Dict, List
+
 from bson.objectid import ObjectId
-from typing import List, Dict
+from pymongo import MongoClient
+
+from boundary.base import BoundaryBase
 
 
 class Content(BoundaryBase):
     """DB Boundary of Content
     """
+
     def __init__(self, client: MongoClient):
         super(Content, self).__init__(client=client)
         self.db = client['contents']

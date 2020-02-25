@@ -1,8 +1,10 @@
-from pymongo import MongoClient
 from pprint import pprint
-from base import BoundaryBase
-from bson.objectid import ObjectId
 from typing import Dict, List
+
+from bson.objectid import ObjectId
+from pymongo import MongoClient
+
+from boundary.base import BoundaryBase
 
 
 class Abst(BoundaryBase):

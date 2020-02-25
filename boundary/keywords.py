@@ -1,9 +1,12 @@
-from pymongo import MongoClient
+from datetime import datetime
 from pprint import pprint
-from base import BoundaryBase
+
+from pymongo import MongoClient
+
+from boundary.base import BoundaryBase
 
 
-class Keyword (BoundaryBase):
+class Keyword(BoundaryBase):
     """DB Boundary of Keyword
     args:
     - client: MongoClient
@@ -24,10 +27,28 @@ class Keyword (BoundaryBase):
         returns
         - result
         """
-        result = self.dbe.insert_one({'keyword': keyword})
+        now = datetime.utcnow()
+        result= self.dbe.update(
+            {"keyword": keyword},
+            {"$setOnInsert": {
+                "keyword": keyword,
+                "insertion_date": now},
+             "$set": {"last_update_date": now}},
+            True, False
+        )
         return result
 
-    def find_objct(self, keyword: str):
+    def get_by_id(self, objectId):
+        """get name by objectId
+        args:
+            objectId: mongodb 's objectId
+        returns:
+            keywords (str):  keyword word
+        """
+        results = self.dbe.find_one({"_id": objectId})
+        return results
+
+    def find_object(self, keyword: str):
         """find objectid by keyword
         args:
         - keyword: str

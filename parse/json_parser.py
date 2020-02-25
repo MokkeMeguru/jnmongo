@@ -5,11 +5,6 @@ import sys
 from pathlib import Path
 from pprint import pprint
 
-from service import absts, contents, related_words, utils
-
-sys.path.append('../')
-
-
 
 def read_json(path: Path):
     with path.open(mode='r', encoding='utf-8') as f:
@@ -20,18 +15,8 @@ def read_json(path: Path):
 def main(json_path: str):
     path = Path(json_path)
     article = read_json(path)
-    title = utils.get_element(article, 'title')
-    rrw, rw = related_words.extract_item(article)
-    keywords = article.get('keywords', [])
-    abstruct, _, left = absts.extract_abstruct(article['article'])
-    pprint(title)
-    pprint(keywords)
-    pprint(rw)
-    pprint(abstruct)
-    section,_ = contents.SectionParser()(left)
-    pprint(section)
     
-
+    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -41,3 +26,4 @@ if __name__ == '__main__':
         type=str)
     args = parser.parse_args(args=['--json_path', '../三枝明那.json'])
     main(args.json_path)
+    # main("./三枝明那.json")
