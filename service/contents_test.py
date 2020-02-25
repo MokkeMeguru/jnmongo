@@ -54,22 +54,23 @@ testcast_2_answer = [
 testcase_3_data = [
     {'tag': 'h2',
      'content': ['title1']},
-    {'tag': None,
+    {'tag': "main",
      'content': [
-         {'tag': None,
+         {'tag': "sub",
           'content': ['hy!']},
          {'tag': 'h3',
           'content': ['title2']},
          {'tag': None,
           'content': [
               {'tag': None,
-               'content': ['hello']}]}]}]
+               'content': ['hello']}]}
+     ]}]
 
 testcast_3_answer = [
     {'titles': ['title1'],
-     'contents': [{'tag': None,
+     'contents': [{'tag': "main",
                    'content': [
-                       {'tag': None,
+                       {'tag': "sub",
                         'content': ['hy!']}]}]},
     {'titles': ['title1', 'title2'],
      'contents': [
