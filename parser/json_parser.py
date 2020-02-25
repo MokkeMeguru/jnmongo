@@ -1,11 +1,13 @@
-import sys
-sys.path.append('../')
-from memory_profiler import profile
-import json
-from pathlib import Path
-from service import related_words, utils, absts
 import argparse
+# from memory_profiler import profile
+import json
+import sys
+from pathlib import Path
 from pprint import pprint
+
+from service import absts, contents, related_words, utils
+
+sys.path.append('../')
 
 
 
@@ -26,7 +28,9 @@ def main(json_path: str):
     pprint(keywords)
     pprint(rw)
     pprint(abstruct)
-    pprint(left)
+    section,_ = contents.SectionParser()(left)
+    pprint(section)
+    
 
 
 if __name__ == '__main__':

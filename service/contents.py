@@ -1,31 +1,8 @@
 import copy
 import random
-from typing import Dict, List, Union
+from typing import List
 
 import regex
-
-# source
-# h2-1
-# content1
-# h2-2
-# content2
-#   |-  h2-3
-#   |- content3
-#          |-  h3-1
-#          |- content4
-#  |- content5
-# h2-3
-#  |- content6
-# h3-3
-#  |- content7
-
-# to
-# h2-1 content1 | h2-1
-# h2-2 content2 | h2-2
-# h2-3 content3 content5 | h2-2 h2-3
-# h3-1 content4 | h2-2 h2-3 h3-1
-# h2-3 content6 | h2-3
-# h3-3 content7 | h3-3
 
 
 class SectionTree:
@@ -38,6 +15,12 @@ class SectionTree:
         return "<SectionTree {} - {} - {}>".format(
             self.titles, self.contents, self.i)
 
+    def to_dict(self):
+        return {
+            "titles": self.titles,
+            "contents": self.contents
+        }
+
 
 class SectionParser:
     def __init__(self, current_titles: List[str] = []):
@@ -49,24 +32,20 @@ class SectionParser:
 
     def gather_tree(self):
         if len(self.current_contents) > 0:
-            print(self.base_titles, "vs", self.current_titles)
             if (len(self.base_titles) != len(self.current_titles)):
                 # current_contents => section_tree
-                print('currents', self.current_titles)
-                print('>>', self.current_contents)
-                print('>> currents trees', self.section_trees)
                 current_tree = SectionTree(
                     copy.copy(self.current_titles),
                     copy.copy(self.current_contents))
                 self.section_trees.append(current_tree)
-                print('updated trees', self.section_trees)
+
                 self.current_contents = []
             else:
                 # current_contents => header_contents
-                print('currents title', self.current_titles)
                 self.header_contents = copy.copy(self.current_contents)
-                print('updated header', self.header_contents)
                 self.current_contents = []
+        if (len(self.base_titles) != len(self.current_titles)):
+            self.current_titles.pop(-1)
 
     def __call__(self, articles: List = [], gather: bool = True):
         article_length = len(articles)
@@ -76,7 +55,6 @@ class SectionParser:
                 break
             idx += 1
             article = articles[idx]
-            print('art', idx,  article)
 
             if type(article) == str:
                 self.current_contents.append(article)
@@ -89,13 +67,8 @@ class SectionParser:
                     self.current_titles.append(article['content'][0])
                 else:
                     # a contents is appeared
-                    print('content', article['content'])
                     section_trees, header_contents = SectionParser(
                         copy.copy(self.current_titles))(article['content'])
-                    print('header', header_contents)
-                    print('tree', section_trees)
-                    print('append to', article['tag'],
-                          header_contents)
                     article['content'] = []
                     article['content'] += header_contents
 
@@ -105,11 +78,11 @@ class SectionParser:
                         self.section_trees.append(section_trees)
         self.gather_tree()
         return self.section_trees, self.header_contents
-      
+
 
 def main():
     from service import contents_test
-    y = SectionParser([])(copy.deepcopy(contents_test.testcase_3_data))
+    y = SectionParser([])(copy.deepcopy(contents_test.testcase_1_data))
     print(y)
     return y
 

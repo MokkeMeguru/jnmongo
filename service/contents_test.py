@@ -41,7 +41,8 @@ testcast_2_answer = [
     {'titles': ['title1'],
      'contents': [
          {'tag': None,
-          'content': ['hy!']}]},
+          'content': ['hy!']},
+         'hi!']},
     {'titles': ['title1', 'title2'],
      'contents': [
          {'tag': None,
@@ -50,7 +51,7 @@ testcast_2_answer = [
                'conent': ['hello']}]}]}]
 
 
-# FAILED
+# PASS
 testcase_3_data = [
     {'tag': 'h2',
      'content': ['title1']},
@@ -78,9 +79,3 @@ testcast_3_answer = [
           'content': [
               {'tag': None,
                'conent': ['hello']}]}]}]
-
-# problem
-# [[<SectionTree ['title1'] - [{'tag': None, 'content': ['hy!']}] - 48>],
-#   <SectionTree ['title1', 'title2'] -
-#     [{'tag': None, 'content':
-#       [{'tag': None, 'content': [{'tag': None, 'content': ['hello']}]}]}] - 36>]
