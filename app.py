@@ -46,18 +46,20 @@ class Saver:
         for keyword in keywords:
             self.keyword_db(keyword)
         for keyword in keywords:
-            self.dockeywords_db(
-                title_objectid, self.keyword_db.find_object(keyword))
-        print([k['doc_title'] for k in self.dockeywords_db.dbe.find()], '->',
-              [self.keyword_db.get_by_id(k['doc_title'])['keyword']
-               for k in self.dockeywords_db.dbe.find()])
-        print([self.keyword_db.get_by_id(w)['keyword']
-              for w in self.dockeywords_db.find_object(title_objectid)])
+            self.dockeywords_db(title_objectid,
+                                self.keyword_db.find_object(keyword))
+        print([k['doc_title'] for k in self.dockeywords_db.dbe.find()], '->', [
+            self.keyword_db.get_by_id(k['doc_title'])['keyword']
+            for k in self.dockeywords_db.dbe.find()
+        ])
+        print([
+            self.keyword_db.get_by_id(w)['keyword']
+            for w in self.dockeywords_db.find_object(title_objectid)
+        ])
 
         # for keyword in rw:
         #     self.relatedwords_db(title_objectid, )
         #         title_objectid, self.keyword_db.find_object(keyword))
-        
 
         # pprint(rw)
         # pprint(abstruct)

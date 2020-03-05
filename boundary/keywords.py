@@ -1,6 +1,7 @@
 from datetime import datetime
 from pprint import pprint
 
+from bson.objectid import ObjectId
 from pymongo import MongoClient
 
 from boundary.base import BoundaryBase
@@ -8,56 +9,60 @@ from boundary.base import BoundaryBase
 
 class Keyword(BoundaryBase):
     """DB Boundary of Keyword
-    args:
-    - client: MongoClient
-    note:
-         this class creates the db table, 'keywords'
+    Attributes:
+        client (MongoClient): MongoDB's client
+    Note:
+        This class creates the db table, 'keywords'
     """
 
     def __init__(self, client: MongoClient):
+        """
+        Args:
+            client (MongoClient): MongoDB's client
+        """
         super(Keyword, self).__init__(client=client)
-        self.db = client['keywords']
-        self.dbe = self.db.keywords
+        self.db_collection = self.db.keywords
+        self.db_collection.create_index('keyword', unique=True)
 
-    def __call__(self, keyword: str):
+    def insert(self, keyword: str):
         """Insert a keyword
-        args:
-        - keyword: str
-        string keyword like a word such as 'Google'
-        returns
-        - result
+        Args:
+            keyword (str): string keyword like a word such as 'Google'
         """
         now = datetime.utcnow()
-        result= self.dbe.update(
-            {"keyword": keyword},
-            {"$setOnInsert": {
+        result = self.db_collection.update_one(
+            filter={"keyword": keyword},
+            update={"$setOnInsert": {
                 "keyword": keyword,
-                "insertion_date": now},
-             "$set": {"last_update_date": now}},
-            True, False
+                "insertion_date": now,
+                "reference": 0},
+             "$set": {"last_update_date": now,
+                      "$inc": {"reference": 1}}},
+            upsert=True
         )
         return result
 
-    def get_by_id(self, objectId):
+    def get_by_id(self, objectId: ObjectId):
         """get name by objectId
-        args:
-            objectId: mongodb 's objectId
-        returns:
-            keywords (str):  keyword word
+        Args:
+            objectId (ObjectId): mongodb 's objectId
+        Returns:
+            keywords (str): keyword word
         """
-        results = self.dbe.find_one({"_id": objectId})
+        results = self.db_collection.find_one({"_id": objectId})
         return results
 
     def find_object(self, keyword: str):
         """find objectid by keyword
-        args:
-        - keyword: str
-            keyword word
-        returns:
-        - result: ObjectId
-            the objectid of the keyword
+        Args:
+            keyword (str): keyword word
+        Returns:
+            result (ObjectId): the objectid of the keyword
         """
-        result = self.dbe.find_one({'keyword':  keyword})
+        result = self.db_collection.find_one({'keyword':  keyword})
+        if len(result) == 0:
+            self.insert(keyword)
+            self.find_object(Keyword)
         return result["_id"]
 
 

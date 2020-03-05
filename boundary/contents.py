@@ -8,52 +8,56 @@ from boundary.base import BoundaryBase
 
 
 class Content(BoundaryBase):
-    """DB Boundary of Content
+    """DB Boundary of Abstruct
+    Attributes:
+        client (MongoClient): MongoDB's client
     """
 
     def __init__(self, client: MongoClient):
-        super(Content, self).__init__(client=client)
-        self.db = client['contents']
-        self.dbe = self.db.contents
-
-    def __call__(self,
-                 doc_title: ObjectId,
-                 child_titles: List[str],
-                 contents: Dict):
-        """Insert a Content
-        args:
-        - doc_title: ObjectId
-           objectid from Keyword
-        - child_titles: List[str]
-           subtitle words
-        - contents: Dict
-           contents json (dict)
         """
-        result = self.dbe.insert_one(
-            {'doc_title': doc_title,
-             'child_titles': child_titles,
-             'contents': contents})
+        Args:
+            client (MongoClient): MongoDB's client
+        """
+        super(Content, self).__init__(client=client)
+        self.db_collection = self.db.contents
+
+    def insert(self, doc_title: ObjectId, child_titles: List[str],
+               contents: Dict):
+        """Insert a Content
+        Args:
+            doc_title (ObjectId): objectid from Keyword
+            child_titles (List[ObjectId]) (subtitle): words's ObjectId
+            contents (Dict) (jsoned): contents
+        """
+        result = self.db_collection.insert_one({
+            'doc_title': doc_title,
+            'child_titles': child_titles,
+            'contents': contents
+        })
         return result
 
-    def find_objects(self, doc_title: ObjectId, child_titles: List[str] = []):
+    def find_objects(self,
+                     doc_title: ObjectId,
+                     child_titles: List[ObjectId] = []):
         """find objectid by some elements
-        args:
-        - doc_title: ObjectId
-            objectid from keywod
-        - child_titles: List[str]
-            subtitle words (default [])
+        Args:
+            doc_title (ObjectId): objectid from keywod
+            child_titles (List[ObjectId]): subtitle words (default [])
         returns:
-        - results: List[Dict]
-           candidate objects
+            results (List[Dict]): candidate objects
         """
         if len(child_titles) != 0:
-            result = self.dbe.find(
-                {'doc_title': doc_title,
-                 'child_titles': {"$in": child_titles},
-                })
+            result = self.db_collection.find({
+                'doc_title': doc_title,
+                'child_titles': {
+                    "$in": child_titles
+                }})
+        elif doc_title is None:
+            result = self.db_collection.find({
+                'child_titles': {"$in": child_titles}
+            })
         else:
-            result = self.dbe.find(
-                {'doc_title': doc_title})
+            result = self.db_collection.find({'doc_title': doc_title})
         return list(result)
 
 
@@ -66,14 +70,13 @@ def test():
     object_id = keyword_db.find_objct("ニコニコ大百科")
 
     content_db = Content(client)
-    content_db(object_id, ["概要"],
-               {"type": None, "content": ["ここは概要"]})
-    content_db(object_id, ["概要", "プロフィール"],
-               {"type": None, "content": ["ここは概要の中のプロフィール"]})
-    content_db(object_id, ["プロフィール"],
-               {"type": None, "content": ["ここはプロフィール"]})
-    content_db(object_id, ["関連項目"],
-               {"type": None, "content": ["ここは関連項目"]})
+    content_db(object_id, ["概要"], {"type": None, "content": ["ここは概要"]})
+    content_db(object_id, ["概要", "プロフィール"], {
+        "type": None,
+        "content": ["ここは概要の中のプロフィール"]
+    })
+    content_db(object_id, ["プロフィール"], {"type": None, "content": ["ここはプロフィール"]})
+    content_db(object_id, ["関連項目"], {"type": None, "content": ["ここは関連項目"]})
 
     print('search: ', ["概要"])
     pprint(content_db.find_objects(object_id, ["概要"]))
@@ -94,6 +97,7 @@ def test():
     pprint(content_db.all)
     keyword_db.reset()
     content_db.reset()
+
 
 if __name__ == '__main__':
     test()

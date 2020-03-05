@@ -1,55 +1,52 @@
-from pymongo import MongoClient
-from pprint import pprint
 from bson.json_util import dumps
 from bson.objectid import ObjectId
-from abc import ABC, abstractmethod
-from pymongo.database import Database
+from pymongo import MongoClient
+
+import ABC
 
 
 class BoundaryBase(ABC):
     def __init__(self, client: MongoClient):
+        """
+        Args:
+            client (MongoClient): MongoDB's client
+        """
         self.client = client
-
-    @abstractmethod
-    def __call__(self, m):
-        return m
+        self.db = client.niconico
 
     def get(self, object_id: ObjectId):
         """find object by objectid
-        args:
-        - object_id: ObjectId
-           objectid
-        returns:
-        - result: dict
-            the object of the objectid
+        Args:
+            object_id (ObjectId): it's objectid
+
+        Returns:
+            result (Dict): the object of the objectid
         """
-        result = self.dbe.find_one({'_id': object_id})
+        result = self.db_collection.find_one({'_id': object_id})
         return result
 
     @property
     def all(self):
         """get all objects
-        returns:
-        - result: list
-           list of objects
+        Returns:
+            result (List): list of objects
         """
-        result = self.dbe.find()
+        result = self.db_collection.find()
         return list(result)
 
     @property
     def jsoned_all(self):
         """get all objects as json
-        returns:
-        - result: list
-           jsoned list of objects
+        Returns:
+            result (list): jsoned list of objects
         """
-        result = self.dbe.find()
+        result = self.db_collection.find()
         return dumps(result)
 
     def reset(self):
         """reset db
         """
-        self.dbe.delete_many({})
+        self.db_collection.delete_many({})
 
     def __len__(self):
-        return self.dbe.count_documents({})
+        return self.db_collection.count_documents({})
