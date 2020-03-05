@@ -1,8 +1,8 @@
+from abc import ABC
+
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from pymongo import MongoClient
-
-import ABC
 
 
 class BoundaryBase(ABC):

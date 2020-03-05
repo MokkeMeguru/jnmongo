@@ -32,14 +32,20 @@ class Keyword(BoundaryBase):
         now = datetime.utcnow()
         result = self.db_collection.update_one(
             filter={"keyword": keyword},
-            update={"$setOnInsert": {
-                "keyword": keyword,
-                "insertion_date": now,
-                "reference": 0},
-             "$set": {"last_update_date": now,
-                      "$inc": {"reference": 1}}},
+            update={
+                "$setOnInsert": {
+                    "keyword": keyword,
+                    "insertion_date": now,
+                    "reference": 0},
+                "$set": {"last_update_date": now},
+            },
             upsert=True
         )
+        self.db_collection.update_one(
+            filter={"keyword": keyword},
+            update={
+                "$inc": {"reference": 1}
+            })
         return result
 
     def get_by_id(self, objectId: ObjectId):

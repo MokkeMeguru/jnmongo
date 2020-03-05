@@ -21,13 +21,13 @@ class Saver:
         client = MongoClient(host='127.0.0.1',
                              port=27017,
                              username="root",
-                             password=password,
-                             authSource="admin")
+                             password=password)
         self.keyword_db = Keyword(client)
         self.dockeywords_db = DocKeywords(client)
         self.relatedwords_db = Related_Words(client)
 
     def save_json(self, article):
+        # parse json
         title = utils.get_element(article, 'title')
         rrw, rw = related_words.extract_item(article)
         keywords = article.get('keywords', [])
@@ -36,7 +36,7 @@ class Saver:
         sections = [section.to_dict() for section in sections]
 
         # check title
-        self.keyword_db(title)
+        self.keyword_db.insert(title)
         title_objectid = self.keyword_db.find_object(title)
         title = self.keyword_db.get_by_id(title_objectid)
         print(title_objectid, '->', title)
@@ -44,18 +44,11 @@ class Saver:
         # check keywords
         pprint(keywords)
         for keyword in keywords:
-            self.keyword_db(keyword)
+            self.keyword_db.insert(keyword)
         for keyword in keywords:
-            self.dockeywords_db(title_objectid,
-                                self.keyword_db.find_object(keyword))
-        print([k['doc_title'] for k in self.dockeywords_db.dbe.find()], '->', [
-            self.keyword_db.get_by_id(k['doc_title'])['keyword']
-            for k in self.dockeywords_db.dbe.find()
-        ])
-        print([
-            self.keyword_db.get_by_id(w)['keyword']
-            for w in self.dockeywords_db.find_object(title_objectid)
-        ])
+            self.dockeywords_db.insert(
+                title_objectid,
+                self.keyword_db.find_object(keyword))
 
         # for keyword in rw:
         #     self.relatedwords_db(title_objectid, )
