@@ -19,7 +19,6 @@ class Abst(BoundaryBase):
         """
         super(Abst, self).__init__(client=client)
         self.db_collection = self.db.absts
-        self.db_collection.creat_index('doc_title', unique=True)
 
     def insert(self, doc_titile: ObjectId, contents: Dict):
         """Insert a Abstruct
@@ -31,10 +30,13 @@ class Abst(BoundaryBase):
             is correct. if insert existing contents,
             this methid will update it.
         """
-        result = self.db_collection.update_one({
-            'doc_title': doc_titile,
-            'contents': contents
-        }, upsert=True)
+        result = self.db_collection.update_one(
+            filter={'_id': doc_titile},
+            update={
+                "$setOnInsert": {
+                    '_id': doc_titile,
+                    'contents': contents}
+            }, upsert=True)
         return result
 
     def find_object(self, doc_title: ObjectId):
@@ -42,5 +44,5 @@ class Abst(BoundaryBase):
         Args:
             doc_title (ObjectId): document's index
         """
-        result = self.db_collection.find_one({'doc_title': ObjectId})
+        result = self.db_collection.find_one({'_id': ObjectId})
         return result

@@ -5,6 +5,8 @@ from pprint import pprint
 
 from pymongo import MongoClient
 
+from boundary.absts import Abst
+from boundary.contents import Content
 from boundary.dockeywords import DocKeywords
 from boundary.keywords import Keyword
 from boundary.related_words import Related_Words
@@ -22,6 +24,8 @@ class Saver:
                              port=27017,
                              username="root",
                              password=password)
+        self.abst_db = Abst(client)
+        self.content_db = Content(client)
         self.keyword_db = Keyword(client)
         self.dockeywords_db = DocKeywords(client)
         self.relatedwords_db = Related_Words(client)
@@ -30,6 +34,7 @@ class Saver:
         # parse json
         title = utils.get_element(article, 'title')
         rrw, rw = related_words.extract_item(article)
+
         keywords = article.get('keywords', [])
         abstruct, _, left = absts.extract_abstruct(article['article'])
         sections, _ = contents.SectionParser()(left)
@@ -64,7 +69,7 @@ def main(json_path: str):
     article = json_parser.read_json(path)
     saver = Saver()
     saver.save_json(article)
-    # return article
+    return saver
 
 
 if __name__ == '__main__':

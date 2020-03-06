@@ -31,7 +31,9 @@ class DocKeywords(BoundaryBase):
                                                        "insertion_date": now
                                                    },
                                                    "$addToSet": {
-                                                       "keywords": keyword,
+                                                       "keywords": keyword
+                                                   },
+                                                   "$set": {
                                                        "last_update_date": now
                                                    }
                                                },

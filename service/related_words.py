@@ -1,7 +1,9 @@
-from boundary import related_words
-from typing import Dict, List
-from service.utils import get_element
 from itertools import chain
+from typing import Dict, List
+
+from boundary import related_words
+from service.utils import get_element
+
 
 def walk_words(d) -> List:
     if type(d) is dict:
@@ -21,13 +23,11 @@ def walk_words(d) -> List:
 
 def extract_item(article: Dict):
     """extract related words from raw article
-    args:
-    - article: Dict
-    returns:
-    - rrw: Dict
-    related words's section
-    - rw: list
-    extracted related words
+    Args:
+        article (Dict)
+    Returns:
+        rrw (Dict):    related words's section
+        rw (list):    extracted related words
     """
     rrw = article.get('related_words', [])
     rw = walk_words(rrw)

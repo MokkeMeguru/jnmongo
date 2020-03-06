@@ -21,10 +21,10 @@ class Related_Words(BoundaryBase):
         super(Related_Words, self).__init__(client=client)
         self.db_collection = self.db.related_words
 
-    def __call__(self,
-                 doc_title: ObjectId,
-                 words: List,
-                 contents: Dict):
+    def insert(self,
+               doc_title: ObjectId,
+               words: List,
+               contents: Dict):
         """Insert Related Words
         Args:
             doc_title (ObjectId): objectid from Keyword
