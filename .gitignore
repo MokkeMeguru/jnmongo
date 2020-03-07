@@ -6,3 +6,4 @@
 /service/__pycache__/__init__.cpython-37.pyc
 /parser/__pycache__/
 *.pyc
+/.ipynb_checkpoints/
