@@ -20,7 +20,7 @@ class Abst(BoundaryBase):
         super(Abst, self).__init__(client=client)
         self.db_collection = self.db.absts
 
-    def insert(self, doc_titile: ObjectId, contents: Dict):
+    def insert(self, doc_title: ObjectId, contents: Dict):
         """Insert a Abstruct
         Args:
             doc_title (ObjectId): objectid from Keyword
@@ -31,10 +31,10 @@ class Abst(BoundaryBase):
             this methid will update it.
         """
         result = self.db_collection.update_one(
-            filter={'_id': doc_titile},
+            filter={'_id': doc_title},
             update={
                 "$setOnInsert": {
-                    '_id': doc_titile,
+                    '_id': doc_title,
                     'contents': contents}
             }, upsert=True)
         return result
