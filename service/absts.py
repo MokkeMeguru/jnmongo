@@ -1,7 +1,9 @@
 import regex
 
 
-def extract_abstruct(article, next_flag=True, left=[]):
+def extract_abstruct(article, next_flag=True, left=None):
+    if left is None:
+        left = []
     if not next_flag:
         return article, next_flag, left
 
