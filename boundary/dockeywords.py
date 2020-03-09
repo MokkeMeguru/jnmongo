@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from typing import List
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 
@@ -16,7 +16,7 @@ class DocKeywords(BoundaryBase):
         super(DocKeywords, self).__init__(client=client)
         self.db_collection = self.db.dockeywords
 
-    def insert(self, doc_title: ObjectId, keyword: ObjectId()):
+    def insert(self, doc_title: ObjectId, keywords: List[ObjectId]):
         """Insert a keyword
         Args:
             doc_title (ObjectId): document's ObjectId
@@ -31,7 +31,7 @@ class DocKeywords(BoundaryBase):
                                                        "insertion_date": now
                                                    },
                                                    "$addToSet": {
-                                                       "keywords": keyword
+                                                       "keywords": {"$each" : keywords}
                                                    },
                                                    "$set": {
                                                        "last_update_date": now
