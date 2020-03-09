@@ -46,7 +46,7 @@ class Content(BoundaryBase):
         returns:
             results (List[Dict]): candidate objects
         """
-        if len(child_titles) != 0:
+        if doc_title is not None and len(child_titles) != 0:
             result = self.db_collection.find({
                 'doc_title': doc_title,
                 'child_titles': {
