@@ -76,9 +76,9 @@ class Keyword(BoundaryBase):
 def test():
     client = MongoClient('127.0.0.1', 27017)
     keyword_db = Keyword(client)
-    pprint(keyword_db("ニコニコ大百科"))
+    pprint(keyword_db.insert("ニコニコ大百科"))
     pprint(keyword_db.all)
-    object_id = keyword_db.find_objct("ニコニコ大百科")
+    object_id = keyword_db.find_object("ニコニコ大百科")
     pprint(object_id)
     pprint(keyword_db.get(object_id)["keyword"])
     pprint(len(keyword_db))

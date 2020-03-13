@@ -13,6 +13,7 @@ class BoundaryBase(ABC):
         """
         self.client = client
         self.db = client.niconico
+        self.db_collection = None
 
     def get(self, object_id: ObjectId):
         """find object by objectid
