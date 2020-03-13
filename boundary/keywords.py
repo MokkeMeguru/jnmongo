@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 from pymongo import MongoClient
 
 from boundary.base import BoundaryBase
+import unicodedata
 
 
 class Keyword(BoundaryBase):
@@ -22,7 +23,6 @@ class Keyword(BoundaryBase):
         """
         super(Keyword, self).__init__(client=client)
         self.db_collection = self.db.keywords
-        self.db_collection.create_index('keyword', unique=True)
 
     def insert(self, keyword: str):
         """Insert a keyword
@@ -34,7 +34,7 @@ class Keyword(BoundaryBase):
             filter={"keyword": keyword},
             update={
                 "$setOnInsert": {
-                    "keyword": keyword,
+                    "keyword": unicodedata.normalize("NFKD", keyword),
                     "insertion_date": now,
                     "reference": 0},
                 "$set": {"last_update_date": now},
@@ -65,10 +65,11 @@ class Keyword(BoundaryBase):
         Returns:
             result (ObjectId): the objectid of the keyword
         """
-        result = self.db_collection.find_one({'keyword':  keyword})
-        if len(result) == 0:
-            self.insert(keyword)
-            self.find_object(Keyword)
+        keyword = unicodedata.normalize("NFKD", keyword)
+        result = self.db_collection.find_one({'keyword': keyword})
+        if result is None:
+            if self.insert(keyword).acknowledged:
+                result = self.find_object(keyword)
         return result["_id"]
 
 

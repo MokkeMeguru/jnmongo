@@ -1,5 +1,5 @@
 import regex
-
+import unicodedata
 
 def extract_abstruct(article, next_flag=True, left=None):
     if left is None:
@@ -32,7 +32,7 @@ def extract_abstruct(article, next_flag=True, left=None):
             return article, next_flag, left
 
     elif type(article) is str:
-        return article, next_flag, left
+        return unicodedata.normalize("NFKD", article), next_flag, left
 
     else:
         return article, next_flag, left

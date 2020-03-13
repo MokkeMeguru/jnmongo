@@ -1,5 +1,6 @@
 from itertools import chain
 from typing import Dict, List
+import unicodedata
 
 from boundary import related_words
 from service.utils import get_element
@@ -11,7 +12,7 @@ def walk_words(d) -> List:
         words = walk_words(v)
         return words
     elif type(d) is str:
-        return set([d])
+        return set([unicodedata.normalize("NFKD",d)])
     elif type(d) is list:
         acc = set()
         for i in d:

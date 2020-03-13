@@ -1,6 +1,7 @@
 import copy
 import random
 from typing import List, Tuple
+import unicodedata
 
 import regex
 
@@ -57,7 +58,7 @@ class SectionParser:
     def parse(self, articles: List = None, gather: bool = True):
         for article in articles:
             if type(article) is str:
-                self.current_contents.append(article)
+                self.current_contents.append(unicodedata.normalize("NFKD", article))
             elif type(article) is dict:
                 tag = article['tag']
                 if (type(tag) is str and regex.fullmatch(r"h\d", tag)):
