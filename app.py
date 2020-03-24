@@ -54,7 +54,8 @@ class Server:
         result = []
         for content in self.content_db.find_objects(doc_title):
             content.pop("doc_title")
-            content.pop ("_id")
+            idx = content.pop ("_id")
+            content ["idx"] = str(idx)
             result.append (content)
         return result
 
@@ -76,7 +77,7 @@ def title_list():
 def related_words():
     doc_title = request.args.get("doc_title")
     if doc_title is None:
-        logging.WARN("doc_title is not found at request /related_words")
+        logging.warning("doc_title is not found at request /related_words")
         return resulty([])
     return resulty(server.related_words(doc_title))
 
@@ -84,9 +85,26 @@ def related_words():
 def contents():
     doc_title = request.args.get("doc_title")
     if doc_title is None:
-        logging.WARN("doc_title is not found at request /contents")
+        logging.warning("doc_title is not found at request /contents")
         return resulty ([])
     return resulty(server.contents(doc_title))
+
+@app.route("/set_candidates", methods=["PUT"])
+def set_candidates():
+    payload = request.json
+    if payload is None:
+        logging.warining("payload is invalid at request /set_candidates")
+        return resulty(False)
+    idx = payload.get("content_idx")
+    if idx is None:
+        logging.warning("payload is invalid at request /set_candidates")
+        return resulty(False)
+    
+    return resulty (True)
+    # if content_idx is None:
+    #     logging.WARN("content_idx is invalid at request /set_candidates")
+    #     return resulty(False)
+    # return resulty(True)
 
 def main(args):
     app.run(host=os.getenv("APP_ADDRESS", 'localhost'), port=args.port)
