@@ -48,14 +48,17 @@ class Keyword(BoundaryBase):
             })
         return result
 
-    def get_by_id(self, objectId: ObjectId):
+    def get_by_id(self, objectId: ObjectId, projection=None):
         """get name by objectId
         Args:
             objectId (ObjectId): mongodb 's objectId
         Returns:
             keywords (str): keyword word
         """
-        results = self.db_collection.find_one({"_id": objectId})
+        if projection is None:
+            results = self.db_collection.find_one({"_id": objectId})
+        else:
+            results = self.db_collection.find_one({"_id": objectId}, projection=projection)
         return results
 
     def find_object(self, keyword: str):
