@@ -85,12 +85,6 @@ class Content(BoundaryBase):
                     "$in": candidates
                 }
             })
-        elif candidates is not None:
-            result = self.db_collection.find({
-                'candidates': {
-                    "$in": candidates
-                }
-            })
         elif doc_title is not None and len(child_titles) != 0:
             result = self.db_collection.find({
                 'doc_title': doc_title,
@@ -102,6 +96,7 @@ class Content(BoundaryBase):
                 'child_titles': {"$in": child_titles}
             })
         else:
+            print("doc_contents")
             result = self.db_collection.find({'doc_title': doc_title})
         return list(result)
 

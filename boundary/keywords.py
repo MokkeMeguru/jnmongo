@@ -6,6 +6,7 @@ from pymongo import MongoClient
 
 from boundary.base import BoundaryBase
 import unicodedata
+from typing import Dict
 
 
 class Keyword(BoundaryBase):
@@ -61,7 +62,7 @@ class Keyword(BoundaryBase):
             results = self.db_collection.find_one({"_id": objectId}, projection=projection)
         return results
 
-    def find_object(self, keyword: str):
+    def find_object(self, keyword: str, projection: Dict =None, not_found_error: bool = False):
         """find objectid by keyword
         Args:
             keyword (str): keyword word
@@ -69,8 +70,13 @@ class Keyword(BoundaryBase):
             result (ObjectId): the objectid of the keyword
         """
         keyword = unicodedata.normalize("NFKD", keyword)
-        result = self.db_collection.find_one({'keyword': keyword})
+        if projection is None:
+            result = self.db_collection.find_one({'keyword': keyword})
+        else:
+            result = self.db_collection.find_one({'keyword': keyword}, projection=projection)
         if result is None:
+            if not_found_error:
+                return None
             if self.insert(keyword).acknowledged:
                 result = self.find_object(keyword)
         return result["_id"]

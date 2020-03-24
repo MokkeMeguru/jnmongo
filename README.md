@@ -13,8 +13,8 @@
     JNMongo を用いてデータを処理したものを、視覚化するためのサンプルコード
 
 4. [WIP] [problems.ipynb](./problems.ipynb)
-   
-   現在 JNMongo が取り組んでいる / 取り組もうとしている問題
+
+    現在 JNMongo が取り組んでいる / 取り組もうとしている問題
 
 # Requirements
 
