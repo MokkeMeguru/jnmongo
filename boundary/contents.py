@@ -37,20 +37,21 @@ class Content(BoundaryBase):
         })
         return result
 
-    def update_candidate(self, 
-        section_id: ObjectId, keywords: List[ObjectId]):
+    def update_candidate(self,
+                         section_id: ObjectId,
+                         keywords: List[ObjectId]):
         """Update the candidates
         Args:
             section_id (ObjectId): ObjectId from Self
             keywords   (ObjectId): related keywords (candidates)
         """
         result = self.db_collection.update_one(
-            filter={'_id',section_id},
-            update={"candidates" : keywords})
+            filter={'_id': section_id},
+            update={"candidates": keywords})
         return result
 
     def get_candidate(self,
-        section_id: ObjectId):
+                      section_id: ObjectId):
         """Get the candidates
         Args:
             section_id (ObjectId): ObjectId from Self
@@ -76,12 +77,12 @@ class Content(BoundaryBase):
             child_titles = []
         if candidates is None:
             candidates = []
-        
+
         # TODO: set candidates methods
         if doc_title is not None and len(candidates) != 0:
             result = self.db_collection.find({
                 'doc_title': doc_title,
-                'candidates' : {
+                'candidates': {
                     "$in": candidates
                 }
             })
@@ -115,8 +116,10 @@ def test():
         "type": None,
         "content": ["ここは概要の中のプロフィール"]
     })
-    content_db.insert(object_id, ["プロフィール"], {"type": None, "content": ["ここはプロフィール"]})
-    content_db.insert(object_id, ["関連項目"], {"type": None, "content": ["ここは関連項目"]})
+    content_db.insert(object_id, ["プロフィール"], {
+                      "type": None, "content": ["ここはプロフィール"]})
+    content_db.insert(object_id, ["関連項目"], {
+                      "type": None, "content": ["ここは関連項目"]})
 
     print('search: ', ["概要"])
     pprint(content_db.find_objects(object_id, ["概要"]))

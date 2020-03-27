@@ -1,12 +1,14 @@
+import argparse
+import json
 import logging
 import os
-import argparse
 from getpass import getpass
 from pathlib import Path
 from pprint import pprint
-import json
-from flask import jsonify, request
 
+from bson.objectid import ObjectId
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 from pymongo import MongoClient
 
 from boundary.absts import Abst
@@ -16,7 +18,7 @@ from boundary.keywords import Keyword
 from boundary.related_words import Related_Words
 from parse import json_parser
 from service import absts, contents, related_words, utils
-from flask import Flask
+
 
 class Server:
     def __init__(self):
@@ -58,9 +60,17 @@ class Server:
             content ["idx"] = str(idx)
             result.append (content)
         return result
+    def insert_candidates(self, contents_id: str, candidates: List[str]):
+        contents_id = ObjectId(contents_id)
+        candidates = list(map(
+            lambda candidate: self.keyword_db.find_object(candidate)["keyword"],
+            candidates))
+        self.content_db.update_candidate(contents_id,
+                                         candidates)
 
 server = Server()
 app = Flask(__name__)
+CORS(app)
 
 def resulty(result):
     result =  {
@@ -96,10 +106,16 @@ def set_candidates():
         logging.warining("payload is invalid at request /set_candidates")
         return resulty(False)
     idx = payload.get("content_idx")
+    print(idx)
     if idx is None:
         logging.warning("payload is invalid at request /set_candidates")
         return resulty(False)
-    
+    if not payload.get("candidate"):
+        return resulty(False)
+    candidates = payload.get("candidates")
+    for candidate in candidates:
+        server.keyword_db.insert(candidate)
+    server.contents_db.
     return resulty (True)
     # if content_idx is None:
     #     logging.WARN("content_idx is invalid at request /set_candidates")
