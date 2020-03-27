@@ -5,6 +5,7 @@ import os
 from getpass import getpass
 from pathlib import Path
 from pprint import pprint
+from typing import List
 
 from bson.objectid import ObjectId
 from flask import Flask, jsonify, request
@@ -58,13 +59,19 @@ class Server:
             content.pop("doc_title")
             idx = content.pop ("_id")
             content ["idx"] = str(idx)
+            candidates = content.pop("candidates")
+            candidates = [self.keyword_db.get_by_id(candidate)["keyword"]
+                          for candidate in candidates]
+            content["candidates"] = candidates
             result.append (content)
         return result
+
     def insert_candidates(self, contents_id: str, candidates: List[str]):
         contents_id = ObjectId(contents_id)
         candidates = list(map(
-            lambda candidate: self.keyword_db.find_object(candidate)["keyword"],
+            lambda candidate: self.keyword_db.find_object(candidate),
             candidates))
+        print(candidates)
         self.content_db.update_candidate(contents_id,
                                          candidates)
 
@@ -106,16 +113,16 @@ def set_candidates():
         logging.warining("payload is invalid at request /set_candidates")
         return resulty(False)
     idx = payload.get("content_idx")
-    print(idx)
     if idx is None:
         logging.warning("payload is invalid at request /set_candidates")
         return resulty(False)
-    if not payload.get("candidate"):
+    if not payload.get("candidates"):
         return resulty(False)
+    print("candidate found")
     candidates = payload.get("candidates")
     for candidate in candidates:
         server.keyword_db.insert(candidate)
-    server.contents_db.
+    server.insert_candidates(idx, candidates)
     return resulty (True)
     # if content_idx is None:
     #     logging.WARN("content_idx is invalid at request /set_candidates")

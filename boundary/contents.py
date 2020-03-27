@@ -47,7 +47,8 @@ class Content(BoundaryBase):
         """
         result = self.db_collection.update_one(
             filter={'_id': section_id},
-            update={"candidates": keywords})
+            update={'$set':
+                    {"candidates": keywords}})
         return result
 
     def get_candidate(self,
